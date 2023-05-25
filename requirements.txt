@@ -1,0 +1,33 @@
+fvcore~=0.1.5
+cython==0.29.28
+
+matplotlib==3.5.0
+imageio==2.19.1
+scipy==1.5.2
+scikit-learn==1.2.2
+scikit-image==0.19.2
+pillow==9.5.0
+chumpy==0.70
+opencv-python==4.5.1.48
+opencv-contrib-python==4.5.3.56
+open3d==0.16.0
+opendr==0.78
+pyrender==0.1.45
+trimesh==3.12.3
+transforms3d==0.3.1
+pyopengl==3.1.0
+
+yacs>=0.1.8
+tensorboard>=2.5.0
+deprecated
+GitPython
+tqdm
+termcolor
+pyyaml
+prettytable
+networkx
+ninja
+
+# vtk 9.1.0
+# PyQt5 5.15.6
+# mayavi 4.7.4

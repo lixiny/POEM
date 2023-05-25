@@ -1,0 +1,143 @@
+TRAIN:
+  MANUAL_SEED: 1
+  CONV_REPEATABLE: true
+  BATCH_SIZE: 32
+  EPOCH: 101
+  OPTIMIZER: adam
+  LR: 0.0001
+  SCHEDULER: StepLR
+  LR_DECAY_GAMMA: 0.1
+  LR_DECAY_STEP:
+  - 32
+  LOG_INTERVAL: 10
+  FIND_UNUSED_PARAMETERS: false
+  GRAD_CLIP_ENABLED: true
+  GRAD_CLIP:
+    TYPE: 2
+    NORM: 1.0
+  WEIGHT_DECAY: 0.0
+DATASET:
+  TRAIN:
+    TYPE: OakInkMultiView
+    DATA_MODE: 3D
+    DATA_ROOT: ./data
+    DATA_SPLIT: train+val
+    SPLIT_MODE: object
+    USE_SPLIT_MV: true
+    USE_QUARTER: true
+    USE_PACK: true
+    N_VIEWS: 4
+    MASTER_SYSTEM: as_constant_camera
+    TRANSFORM:
+      TYPE: SimpleTransform3DMultiView
+      AUG: true
+      CENTER_JIT: 0.0
+      SCALE_JIT: 0.06
+      ROT_JIT: 5
+      COLOR_JIT: 0.3
+      ROT_PROB: 0.5
+      OCCLUSION: true
+      OCCLUSION_PROB: 0.2
+  TEST:
+    TYPE: OakInkMultiView
+    DATA_MODE: 3D
+    DATA_ROOT: ./data
+    DATA_SPLIT: test
+    SPLIT_MODE: object
+    USE_SPLIT_MV: true
+    USE_PACK: true
+    N_VIEWS: 4
+    TEST_WITH_MULTIVIEW: true
+    MASTER_SYSTEM: as_constant_camera
+    TRANSFORM:
+      TYPE: SimpleTransform3DMultiView
+      AUG: false
+DATA_PRESET:
+  USE_CACHE: true
+  BBOX_EXPAND_RATIO: 2.0
+  IMAGE_SIZE:
+  - 256
+  - 256
+  CENTER_IDX: 0
+  WITH_HEATMAP: true
+  NUM_JOINTS: 21
+  NUM_VERTS: 778
+MODEL:
+  TYPE: PETRMultiView
+  PRETRAINED: null
+  BACKBONE:
+    TYPE: ResNet34
+    PRETRAINED: true
+    FREEZE_BATCHNORM: true
+  HEAD:
+    TYPE: PETRHead_FTL
+    TRANSFORMER:
+      TYPE: PETRTransformer
+      ENCODER: null
+      DECODER:
+        TYPE: PETRTransformerDecoderLayerSequence
+        NUM_LAYERS: 6
+        RETURN_INTERMEDIATE: true
+        POST_NOMR: true
+        TRANSFORMER_LAYER:
+          TYPE: PETRTransformerDecoderLayer
+          ATTN_CFGS:
+          - TYPE: MultiheadAttention
+            EMBED_DIMS: 256
+            NUM_HEADS: 8
+            ATTN_DROP: 0.1
+            PROJ_DROP: 0.0
+            BATCH_FIRST: false
+          - TYPE: PETRMultiheadAttention
+            EMBED_DIMS: 256
+            NUM_HEADS: 8
+            ATTN_DROP: 0.1
+            PROJ_DROP: 0.0
+            BATCH_FIRST: false
+          FFN_CFGS:
+            TYPE: FFN
+            NUM_FCS: 2
+            EMBED_DIMS: 256
+            FEEDFORWARD_CHANNELS: 2048
+            FFN_DROP: 0.1
+            ADD_IDENTITY: true
+          OPERATION_ORDER:
+          - self_attn
+          - norm
+          - cross_attn
+          - norm
+          - ffn
+          - norm
+          WITH_CP: true
+          BATCH_FIRST: false
+    POSITIONAL_ENCODING:
+      TYPE: SinePositionalEncoding3D
+      NUM_FEATS: 128
+      NORMALIZE: true
+    WITH_POSITION: true
+    WITH_MULTIVIEW: true
+    NUM_QUERY: 799
+    NUM_PREDS: 6
+    NUM_REG_FCS: 2
+    DEPTH_NUM: 64
+    POSITION_RANGE:
+    - -1.0
+    - -1.0
+    - 0.0
+    - 1.0
+    - 1.0
+    - 1.5
+    LID: true
+    DEPTH_START: 0.0
+    DEPTH_END: 1.5
+    EMBED_DIMS: 256
+    IN_CHANNELS: 128
+    COORD_RELATIVE_TO_REFERENCE: true
+  LOSS:
+    JOINTS_LOSS_TYPE: l2
+    VERTICES_LOSS_TYPE: l1
+    JOINTS_LOSS_WEIGHT: 1.0
+    VERTICES_LOSS_WEIGHT: 1.0
+    JOINTS_2D_LOSS_WEIGHT: 1.0
+    VERTICES_2D_LOSS_WEIGHT: 0.0
+    EDGE_LOSS_WEIGHT: 0.0

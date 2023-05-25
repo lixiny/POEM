@@ -1,0 +1,126 @@
+TRAIN:
+  MANUAL_SEED: 1
+  CONV_REPEATABLE: true
+  BATCH_SIZE: 16
+  EPOCH: 101
+  OPTIMIZER: adam
+  LR: 0.0001
+  SCHEDULER: StepLR
+  LR_DECAY_GAMMA: 0.1
+  LR_DECAY_STEP:
+  - 70
+  LOG_INTERVAL: 10
+  FIND_UNUSED_PARAMETERS: false
+  GRAD_CLIP_ENABLED: true
+  GRAD_CLIP:
+    TYPE: 2
+    NORM: 1.0
+  WEIGHT_DECAY: 0.0
+DATASET:
+  TRAIN:
+    TYPE: HO3Dv3MultiView
+    DATA_MODE: 3D
+    DATA_ROOT: ./data
+    DATA_SPLIT: train
+    N_VIEWS: 5
+    SPLIT_MODE: paper
+    USE_GT_FROM_MULTIVIEW: true
+    USE_LEFT_HAND: false
+    MASTER_SYSTEM: as_constant_camera
+    CONST_CAM_ID: 2
+    TRANSFORM:
+      TYPE: SimpleTransform3DMultiView
+      AUG: true
+      CENTER_JIT: 0.0
+      SCALE_JIT: 0.06
+      ROT_JIT: 5
+      COLOR_JIT: 0.3
+      ROT_PROB: 0.5
+      OCCLUSION: true
+      OCCLUSION_PROB: 0.2
+  TEST:
+    TYPE: HO3Dv3MultiView
+    DATA_MODE: 3D
+    DATA_ROOT: ./data
+    DATA_SPLIT: test
+    N_VIEWS: 5
+    SPLIT_MODE: paper
+    USE_LEFT_HAND: false
+    TEST_WITH_MULTIVIEW: true
+    MASTER_SYSTEM: as_constant_camera
+    CONST_CAM_ID: 2
+    TRANSFORM:
+      TYPE: SimpleTransform3DMultiView
+      AUG: false
+DATA_PRESET:
+  USE_CACHE: true
+  BBOX_EXPAND_RATIO: 2.0
+  IMAGE_SIZE:
+  - 256
+  - 256
+  CENTER_IDX: 0
+  NUM_JOINTS: 21
+  NUM_VERTS: 778
+  WITH_HEATMAP: true
+  HEATMAP_SIZE:
+  - 32
+  - 32
+  HEATMAP_SIGMA: 2.0
+  WITH_MASK: false
+MODEL:
+  TYPE: PtEmbedMultiviewStereo
+  PRETRAINED: null
+  VERTICES_INIT_MODE: linear_inv_skinning
+  BACKBONE:
+    TYPE: ResNet34
+    PRETRAINED: true
+    FREEZE_BATCHNORM: true
+  HEAD:
+    TYPE: POEM_Projective_SelfAggregation_Head
+    TRANSFORMER:
+      TYPE: PtEmbedTRv2
+      N_BLOCKS: 6
+      N_NEIGHBOR: 16
+      N_NEIGHBOR_QUERY: 16
+      POINTS_FEAT_DIM: 256
+      WITH_POSI_EMBED: true
+      TRANSFORMER_DIM: 256
+      PREDICT_INV_SIGMOID: true
+    POSITIONAL_ENCODING:
+      TYPE: SinePositionalEncoding3D
+      NUM_FEATS: 128
+      NORMALIZE: true
+    WITH_POSITION: true
+    WITH_MULTIVIEW: true
+    NUM_QUERY: 799
+    NUM_PREDS: 6
+    NUM_REG_FCS: 2
+    DEPTH_NUM: 32
+    POSITION_RANGE:
+    - -0.6
+    - -0.6
+    - 0.0
+    - 0.6
+    - 0.6
+    - 1.2
+    LID: false
+    DEPTH_START: 0.0
+    DEPTH_END: 1.2
+    POINTS_FEAT_DIM: 256
+    EMBED_DIMS: 256
+    IN_CHANNELS: 128
+    CENTER_SHIFT: true
+    N_SAMPLE: 4096
+    RADIUS_SAMPLE: 0.2
+    CAM_FEAT_MERGE: attn
+    QUERY_TYPE: KPT
+  LOSS:
+    JOINTS_LOSS_TYPE: l2
+    VERTICES_LOSS_TYPE: l1
+    HEATMAP_JOINTS_WEIGHT: 10.0
+    TRIANGULATED_JOINTS_WEIGHT: 10.0
+    JOINTS_LOSS_WEIGHT: 1.0
+    VERTICES_LOSS_WEIGHT: 1.0
+    JOINTS_2D_LOSS_WEIGHT: 1.0
+    VERTICES_2D_LOSS_WEIGHT: 0.0
+    EDGE_LOSS_WEIGHT: 0.0

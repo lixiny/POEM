@@ -1,0 +1,12 @@
+name: POEM2
+channels:
+  - conda-forge
+  - fvcore
+  - defaults
+dependencies:
+  - python==3.8
+  - setuptools~=58.5
+  - numpy==1.23.5
+  - pip
+  - ipython
+  - pyembree

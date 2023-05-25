@@ -1,0 +1,53 @@
+D=`date "+%F-%T"`
+P=`pwd`
+ST=$(date +%s)
+
+Color_Off='\033[0m'
+BICyan='\033[1;96m'
+On_IRed='\033[0;101m'
+On_IYellow='\033[0;103m'
+On_IGreen='\033[0;102m'
+
+echo -e "${BICyan}Curr time: $D${Color_Off}"
+ISOLATED_DIR="tmp/isolated/$D"
+
+echo -e "${BICyan}Create isolated path: $ISOLATED_DIR${Color_Off}"
+mkdir -p $ISOLATED_DIR
+
+echo -e "${On_IRed}Copy${Color_Off}"
+cp -r ./lib $ISOLATED_DIR
+cp -r ./scripts $ISOLATED_DIR
+cp -r ./config $ISOLATED_DIR
+cp -r ./prepare $ISOLATED_DIR
+cp -r ./docs $ISOLATED_DIR
+cp --parents `git ls-tree --full-tree --name-only -r HEAD` $ISOLATED_DIR 2>/dev/null
+cp -r ./*.py $ISOLATED_DIR 2>/dev/null
+
+cd $ISOLATED_DIR
+
+echo -e "${On_IYellow}Link${Color_Off}"
+ln -s $P/assets
+ln -s $P/checkpoints
+ln -s $P/common
+ln -s $P/data
+ln -s $P/exp
+ln -s $P/tmp
+ln -s $P/.git
+
+echo -e "${On_IGreen}Run!${Color_Off}"
+python $@
+
+exit_status=$?
+if [ $exit_status -ne 0 ]; then
+  echo -e "${On_IRed}Error: Python script failed!${Color_Off}"
+else
+  echo -e "${On_IGreen}Python script completed successfully!${Color_Off}"
+fi
+
+ET=$(date +%s)
+diff=$(expr $ET - $ST)
+echo "Time cost: $((diff/86400)) days, $(date -d @$diff -u +'%H:%M:%S')"
+
+cd -
+
+rm -rf $ISOLATED_DIR
