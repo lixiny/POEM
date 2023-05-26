@@ -59,7 +59,7 @@ Download the pretrained checkpoints at [:link: ckpt_release](https://drive.googl
 - `-p, --dist_master_port`, port for distributed training, e.g. `-p 60011`, set different `-p` for different training processes.
 - `-b, --batch_size`, e.g. `-b 32`, default is specified in config file, but will be overwritten if `-b` is provided.
 - `--cfg`, config file for this experiment, e.g. `--cfg config/release/${MODEL}_${DATASET}.yaml`.
-- `--exp_id` specify the name of experiment, e.g. `--exp_id ${EXP_ID}`. When `--exp_id` is provided, the code requires that no uncommitted changes is remained in the git repo. Otherwise, it defaults to 'default' for training and 'eval\_{cfg\*fname}' for evaluation. All results will be saved in `exp/${EXP_ID}_{timestamp}`.
+- `--exp_id` specify the name of experiment, e.g. `--exp_id ${EXP_ID}`. When `--exp_id` is provided, the code requires that no uncommitted change is remained in the git repo. Otherwise, it defaults to 'default' for training and 'eval\_{cfg}' for evaluation. All results will be saved in `exp/${EXP_ID}*{timestamp}`.
 - `--reload`, specify the path to the checkpoint (.pth.tar) to be loaded.
 
 ### Evaluation
