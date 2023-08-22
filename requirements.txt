@@ -3,7 +3,7 @@ cython==0.29.28
 
 matplotlib==3.5.0
 imageio==2.19.1
-scipy==1.5.2
+scipy==1.10.0
 scikit-learn==1.2.2
 scikit-image==0.19.2
 pillow==9.5.0
