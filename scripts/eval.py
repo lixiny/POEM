@@ -57,10 +57,10 @@ def main_worker(cfg: CN, arg: Namespace, time_f: float):
     model = DP(model).to(device=rank)
 
     # define the callback, invoked after each batch forward
-    if arg.test_extra == "auc":
+    if arg.eval_extra == "auc":
         val_max = 0.05 if test_data.__class__.__name__ == 'HO3Dv3MultiView' else 0.02
         cb = AUCCallback(val_max=val_max, exp_dir=os.path.join(recorder.eval_dump_path))
-    elif arg.test_extra == "draw":
+    elif arg.eval_extra == "draw":
         cb = DrawingHandCallback(img_draw_dir=os.path.join(recorder.dump_path, "draws"))
     else:
         cb = IdleCallback()  # do nothing
@@ -69,8 +69,6 @@ def main_worker(cfg: CN, arg: Namespace, time_f: float):
         model.eval()
         testbar = etqdm(test_loader, rank=rank)
         for bidx, batch in enumerate(testbar):
-            if bidx >= 2:
-                break
             step_idx = 0 * len(test_loader) + bidx
             preds = model(batch, step_idx, "test", callback=cb)
             testbar.set_description(f"{bar_perfixes['test']} {model.module.format_metric('test')}")
