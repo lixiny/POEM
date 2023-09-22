@@ -97,7 +97,8 @@ All the training checkpoints are saved at `exp/${EXP_ID}_{timestamp}/checkpoints
 
 ## License
 
-This code and model are available for non-commercial scientific research purposes as defined in the [LICENSE](LICENSE) file. By downloading and using the code and model you agree to the terms in the [LICENSE](LICENSE).
+The code and model provided herein are available for usage as specified in [LICENSE](LICENSE) file. 
+By downloading and using the code and model you agree to the terms in the [LICENSE](LICENSE).
 
 ## Citation
 
