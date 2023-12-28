@@ -107,11 +107,12 @@ After the above steps, the `./data/OakInk` directory should have the following s
 &nbsp;
 
 ## :luggage: Assets
+Get the MANO hand model `mano_v1_2.zip` from the [MANO website](https://mano.is.tue.mpg.de).  
+1. click **`Download`** on the top menu, this requires register & login.
+2. on the Download page, navigate to **Models & Code** section, and click `Models & Code`, the `mano_v1_2.zip` will be downloaded automatically.
+3. Unzip `mano_v1_2.zip` and copy it into an `assets` folder.
 
-Download `mano_v1_2.zip` from the [MANO website](https://mano.is.tue.mpg.de) (Sign in -> Download -> Models & Code),  
-unzip, and copy it to `assets/mano_v1_2`:
-
-```Shell
+```shell
 $ mkdir assets
-$ cp -r path/to/mano_v1_2 assets/
+$ cp -r {path/to}/mano_v1_2 ./assets/
 ```
