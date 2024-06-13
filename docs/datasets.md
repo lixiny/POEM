@@ -38,7 +38,7 @@ The `./data/HO3D_v3` should have the following structure:
 Sequence: 'GPMF1' and 'SB1' in HO3D v3's official testing set are included by HO3D-MV dataset.
 We provide ground-truth MANO annotation for frames in 'GPMF1' and 'SB1' sequences.
 
-Download the [:link: HO3D_v3_manual_test_gt.zip](https://drive.google.com/file/d/12T2Td0rTNy_l6fKi7KqTp0uttrRVS9kB/view?usp=share_link), unzip, and link the folder to `./data/HO3D_v3_manual_test_gt`.
+Download the :link: [HO3D_v3_manual_test_gt.zip](https://huggingface.co/lixiny/POEM_CVPR2023/blob/main/data/HO3D_v3_manual_test_gt.zip), unzip, and link the folder to `./data/HO3D_v3_manual_test_gt`.
 
 ```diff
 ├── HO3D_v3
