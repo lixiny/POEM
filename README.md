@@ -50,7 +50,7 @@ It achieves the state-of-the-art performance on three multi-view Hand-Object Dat
 - set `${MODEL}` as one in `[POEM, MVP, PEMeshTR, FTLMeshTR]`
 - set `${DATASET}` as one in `[DexYCBMV, HO3Dv3MV, OakInkMV]`
 
-Download the pretrained checkpoints at [:link: ckpt_release](https://drive.google.com/drive/folders/1kWziuWaqevAd9F8Pa4ASmc1krIQe-LwN?usp=share_link) and move the contents to `./checkpoint`.
+Download the pretrained checkpoints at :link: [ckpt](https://huggingface.co/lixiny/POEM_CVPR2023/tree/main/ckpt_cvpr2023) and move the contents to `./checkpoint`.
 
 ### Command line arguments
 
