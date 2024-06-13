@@ -83,7 +83,7 @@ $ python -c "from oikit.oi_image import OakInkImage"
 
 #### Deformable (optional, only required for [MvP](https://arxiv.org/pdf/2111.04076.pdf) model)
 
-Download MvP's **Deformable operation** code [:link: Deformable.zip](https://drive.google.com/file/d/1IEboRin84_HuDzP6Ucu3jqhCas1YHsiD/view?usp=share_link), unzip, and copy into `./thirdparty`.  
+Download MvP's **Deformable operation** code :link: [Deformable.zip](https://huggingface.co/lixiny/POEM_CVPR2023/blob/main/thirdparty/Deformable.zip), unzip, and copy into `./thirdparty`.  
 This Deformable archive is a backup of the `mvp/lib/models/ops` from MvP's [source page](https://github.com/sail-sg/mvp/tree/8b2ccc576a450841a5b344597cec26e5ac77eaf7/lib/models/ops).
 
 ```shell
