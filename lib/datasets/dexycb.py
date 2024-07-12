@@ -237,8 +237,11 @@ class DexYCB(HDataset):
         ori_idx = self.sample_idxs[idx]
         sample = self.dex_ycb[ori_idx]
         label = self.get_label(sample["label_file"])  # keys: seg, pose_y, pose_m, joint_3d, joint_2d
-        pose_m = np.array(label["pose_m"][0, :48], dtype=np.float32)
-        return pose_m
+        pose_m = torch.from_numpy(label["pose_m"])
+        mano_layer = self.dexycb_mano_right if sample["mano_side"] == "right" else self.dexycb_mano_left
+        pose = mano_layer.rotation_by_axisang(pose_m[:, :48])["full_poses"]  # (1, 48)
+        pose = pose.squeeze(0).numpy().astype(np.float32)
+        return pose
 
     def get_mano_shape(self, idx):
         ori_idx = self.sample_idxs[idx]

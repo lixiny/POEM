@@ -121,6 +121,18 @@ def viz_hdata_dexycb_3d(args):
         verts_3d = output["target_verts_3d"]
         joints_3d = output["target_joints_3d"]
         cam_intr = output["target_cam_intr"]
+        mano_pose = output["target_mano_pose"].reshape(-1)
+        mano_shape = output["target_mano_shape"]
+
+        mano_output = mano_wrapper.forward(
+            torch.from_numpy(mano_pose[None, ...]), 
+            torch.from_numpy(mano_shape[None, ...]),
+        )
+        verts_rel = mano_output["_verts_rel"].squeeze(0).numpy()
+        center_idx = mano_wrapper.mano_layer.center_idx
+        joint_root = joints_3d[center_idx, :] # (3,)
+        verts_3d_from_mano = verts_rel + joint_root
+        assert np.allclose(verts_3d, verts_3d_from_mano, atol=1e-5)
 
         joints_2d_proj = persp_project(verts_3d, cam_intr)
 
