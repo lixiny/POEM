@@ -30,6 +30,7 @@ class RandomOcclusion:
         self.occlusion_prob = occlusion_prob
 
     def __call__(self, results):
+        # TODO: add support for depth image
 
         if np.random.rand() > self.occlusion_prob:
             return results
@@ -94,6 +95,7 @@ class SimpleTransform2D:
 
     def __call__(self, image, label):
         if self._aug:
+            # TODO: add support for depth image
             cf = self._center_jit_factor
             sf = self._scale_jit_factor
             rf = self._rot_jit_factor
@@ -139,6 +141,7 @@ class SimpleTransform2D:
                                borderMode=cv2.BORDER_CONSTANT)
 
         if self._aug:
+            # TODO: add support for depth image
             c_high = 1 + self._color_jit_factor
             c_low = 1 - self._color_jit_factor
             image[:, :, 0] = np.clip(image[:, :, 0] * random.uniform(c_low, c_high), 0, 255)
@@ -147,8 +150,11 @@ class SimpleTransform2D:
 
         image_np = image
         image = tvF.to_tensor(image)
-        assert image.shape[0] == 3
-        image = tvF.normalize(image, [0.5, 0.5, 0.5], [1, 1, 1])
+        # assert image.shape[0] == 3
+        channel_count = image.shape[0]
+        _mean, _std =  [.5] * channel_count, [1] * channel_count
+        image = tvF.normalize(image, mean=_mean, std=_std)
+
 
         results = {
             "rot_rad": rot,
