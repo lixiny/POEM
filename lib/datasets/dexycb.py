@@ -253,20 +253,29 @@ class DexYCB(HDataset):
 @DATASET.register_module()
 class DexYCB_Depth(DexYCB):
 
+    MAX_VAL = 65535.0
+
     def __init__(self, cfg):
         """
-        cfg.N_CHANNELS: 1 or 3
+        cfg.N_CHANNELS: 1 or 3, default 3
             specify the number of channels of the output depth image.
             the depth image in the disk is 1-channel, but in more cases,
-            a 3-channel image better fits the existing rgb processing code.
+            a 3-channel image better fits the existing rgb processing code
+            (which may expect the image to contain 3 channels).
+        cfg.REMAP_MAX_VAL: float, default 1.0
+            the max value of the remapped depth image.
+            e.g. if set to 255.0, the depth image will be remapped to [0, 255] from the original [0, 65535].
+            This may be useful to fit the existing rgb processing code
+            (which may expect the image to be in [0, 255]).
         """
         super().__init__(cfg)
         self.n_channels = cfg.get("N_CHANNELS", 3)
-        assert self.n_channels in [1, 3], f"Only supports 1 or 3 channels"
+        assert self.n_channels in [1, 3], f"Only supports 1 or 3 channels, got {self.n_channels}"
+        self.remap_max_val = cfg.get("REMAP_MAX_VAL", 1.0)
 
     def get_image(self, idx,):
         """
-        Returns the depth image. Shape: (H, W, C)
+        Returns the depth image. Shape: (H, W, C). dtype: float32
         If n_channels is 1, return the depth image. Shape: (H, W, 1)
         If n_channels is 3, the depth image is repeated to 3 channels. Shape: (H, W, 3)
         """
@@ -277,16 +286,16 @@ class DexYCB_Depth(DexYCB):
                 imageio.imread(path),
                 dtype=np.float32,
             )
-            / 65535.0
+            / self.MAX_VAL 
+            * self.remap_max_val
         )
         # The image in the disk is 16-bit quantized.
         # But due to the fact that torch.from_numpy does not support uint16,
         # and that cv2.warpAffine does not support int32,
-        # here image is loaded as float32 and then quantized to 0-1.
-        
+        # here image is loaded as float32 and then remapped to [0, self.remap_max_val].
+
         img = img[:, :, np.newaxis]  # add a channel dimension
-        if self.n_channels == 3:
-            img = np.repeat(img, 3, axis=2)
+        img = np.repeat(img, self.n_channels, axis=2) # according to n_channels, repeat the same channel
         return img
 
     def get_image_path(self, idx):
